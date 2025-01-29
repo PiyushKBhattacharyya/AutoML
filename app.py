@@ -22,7 +22,7 @@ if choice == "Upload":
     file = st.file_uploader("Upload Your Dataset")
     if file:
         df = pd.read_csv(file, index_col=None)
-        df.to_csv('dataset.csv', index=False)  # Save the uploaded dataset
+        df.to_csv('dataset.csv', index=False)
         st.dataframe(df)
 
 # Profiling section
@@ -39,31 +39,23 @@ if choice == "Modelling":
     if df is not None:
         chosen_target = st.selectbox('Choose the Target Column', df.columns)
 
-        # Handle missing values and non-numeric data before running PyCaret
         if st.button('Run Modelling'):
-            # Step 1: Handle missing data by filling numeric columns with mean
             df = df.fillna(df.select_dtypes(include=['float64', 'int64']).mean())
-            
-            # Step 2: Convert non-numeric columns to categorical ones (one-hot encoding)
             categorical_columns = df.select_dtypes(include=['object']).columns
             for column in categorical_columns:
-                df[column] = df[column].astype(str)  # Ensure the column is of string type before encoding
+                df[column] = df[column].astype(str)
 
-            # Step 3: Apply one-hot encoding only to non-numeric columns
-            df = pd.get_dummies(df, drop_first=True)  # Apply one-hot encoding
-            
-            # PyCaret setup
+            df = pd.get_dummies(df, drop_first=True)
+
             setup(df, target=chosen_target)
 
-            setup_df = pull()  # Retrieve the setup data
+            setup_df = pull()
             st.dataframe(setup_df)
 
-            # Model comparison
-            best_model = compare_models()  # Get the best model
-            compare_df = pull()  # Retrieve model comparison results
+            best_model = compare_models()
+            compare_df = pull()
             st.dataframe(compare_df)
 
-            # Save the best model
             save_model(best_model, 'best_model')
 
         else:
