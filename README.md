@@ -31,7 +31,6 @@ Follow the steps below to run the app locally:
 
 ### 1. Clone the Repository
 ```
-bash
 git clone https://github.com/your-username/automl-app.git
 cd automl-app
 ```
